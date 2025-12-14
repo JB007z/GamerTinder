@@ -53,3 +53,4 @@ class Match(Base):
     timestamp = Column(DateTime(timezone=True), server_default=func.now())
     user1 = relationship("User", foreign_keys=[user1_id])
     user2 = relationship("User", foreign_keys=[user2_id])
+    
