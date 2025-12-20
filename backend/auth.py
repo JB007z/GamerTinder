@@ -1,3 +1,4 @@
+import os
 from datetime import datetime,timedelta
 from typing import Optional
 from fastapi import Depends
@@ -6,6 +7,8 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 import models, schemas, database
+from dotenv import load_dotenv
+
 load_dotenv()
 
 SECRET_KEY = os.getenv("SECRET_KEY")
@@ -24,7 +27,7 @@ def get_password_hash(password):
     return pwd_context.hash(password)
 
 
-def create_acess_token(data:dict, expires_delta: Optional[timedelta]=delta):
+def create_acess_token(data:dict, expires_delta: Optional[timedelta]=None):
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.utcnow()+expires_delta
