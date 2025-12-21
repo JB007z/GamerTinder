@@ -3,12 +3,16 @@ from pydantic import BaseModel
 from typing import List,Annotated
 from database import engine,SessionLocal,get_db
 import models
-import schemas
+from backend import schemas
 from sqlalchemy.orm import Session
-from utils import Hash
+from backend.utils import Hash
 app = FastAPI()
 models.Base.metadata.create_all(bind=engine)
 db_dependency = Annotated[Session,Depends(get_db)]
+
+@app.get("/")
+def default_response():
+    return {"message":"Server is running lil bro"}
 
 @app.post("/register/",response_model=schemas.UserResponse)
 def create_user(user:schemas.UserCreate,db:db_dependency):
@@ -30,4 +34,3 @@ def create_user(user:schemas.UserCreate,db:db_dependency):
 
 
 
-@app.post("/login/")

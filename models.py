@@ -35,21 +35,21 @@ class Game(Base):
 class Like(Base):
     __tablename__ = 'likes'
     id = Column(Integer, primary_key=True, index=True)
-    liker_id = Column(Integer,ForeignKey='users.id',index=True)
-    liked_id = Column(Integer,ForeignKey='users.id',index=True)
+    liker_id = Column(Integer,ForeignKey('users.id'),index=True)
+    liked_id = Column(Integer,ForeignKey('users.id'),index=True)
     status = Column(String,index=True)
     timestamp = Column(DateTime(timezone=True), server_default=func.now())
 
     __table_args__ = (
-        UniqueConstraint('liker_id','liked_id',name='unique_like_pair')
+        UniqueConstraint('liker_id','liked_id',name='unique_like_pair'),
 
     )
 
 class Match(Base):
     __tablename__ = 'matches'
     id = Column(Integer,primary_key=True,index=True)
-    user1_id = Column(Integer,ForeignKey='users.id',index=True)
-    user2_id = Column(Integer,ForeignKey='users.id',index=True)
+    user1_id = Column(Integer,ForeignKey('users.id'),index=True)
+    user2_id = Column(Integer,ForeignKey('users.id'),index=True)
     timestamp = Column(DateTime(timezone=True), server_default=func.now())
     user1 = relationship("User", foreign_keys=[user1_id])
     user2 = relationship("User", foreign_keys=[user2_id])
