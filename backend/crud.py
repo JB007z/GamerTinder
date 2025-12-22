@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
-from .. import models
-import schemas
-from utils import Hash
+import models
+from backend import schemas
+from backend.utils import Hash
 
 def create_user(db: Session, user:schemas.UserCreate):
     hashed_password = Hash.bcrypt(user.raw_password)
