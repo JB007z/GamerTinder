@@ -1,4 +1,6 @@
 import os
+import models, database
+from backend import schemas
 from datetime import datetime,timedelta
 from typing import Optional
 from fastapi import Depends
@@ -6,7 +8,6 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
-import models, schemas, database
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -48,14 +49,14 @@ def get_current_user(token:str = Depends(oauth2_scheme),db:Session = Depends(dat
     )
     try:
         payload = jwt.decode(token,SECRET_KEY,algorithms=[ALGORITHM])
-        username:str = payload.get("sub")
-        if username is None:
+        email:str = payload.get("sub")
+        if email is None:
             raise credentials_exception
-        token_data =schemas.TokenData(username=username)
+        token_data =schemas.TokenData(email=email)
     except JWTError:
         raise credentials_exception 
 
-    user = db.query(models.User).filter(models.user.Username == token_data.username).first()
+    user = db.query(models.User).filter(models.User.email == token_data.email).first()
     if user is None:
         raise credentials_exception
 

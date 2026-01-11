@@ -4,9 +4,10 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from typing import List,Annotated
 from database import engine,SessionLocal,get_db
-import models
 from backend import schemas,crud,auth
 from backend.utils import Hash
+from datetime import timedelta
+import models
 app = FastAPI()
 models.Base.metadata.create_all(bind=engine)
 db_dependency = Annotated[Session,Depends(get_db)]
@@ -32,7 +33,7 @@ def login_user(form_data:Annotated[OAuth2PasswordRequestForm,Depends()],db:db_de
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password",
-            headers={"WWW-Authenticate: Bearer"}
+            headers={"WWW-Authenticate": "Bearer"}
         )
     
     access_token_expires = timedelta(minutes=auth.ACESS_TOKEN_EXPIRES)
