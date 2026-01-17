@@ -6,7 +6,8 @@ from typing import List,Annotated
 from database import engine,SessionLocal,get_db
 from backend import schemas,crud,auth
 from backend.utils import Hash
-from datetime import timedelta
+from backend.auth import get_current_user
+from datetime import timedelta,datetime,timezone
 import models
 app = FastAPI()
 models.Base.metadata.create_all(bind=engine)
@@ -35,7 +36,7 @@ def login_user(form_data:Annotated[OAuth2PasswordRequestForm,Depends()],db:db_de
             detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Bearer"}
         )
-    
+     
     access_token_expires = timedelta(minutes=auth.ACESS_TOKEN_EXPIRES)
     access_token = auth.create_acess_token(
         data={"sub":user.email},
@@ -43,5 +44,55 @@ def login_user(form_data:Annotated[OAuth2PasswordRequestForm,Depends()],db:db_de
     )
     return {"access_token":access_token,"token_type":"bearer"}
 
+@app.get("/profiles",response_model=List[schemas.UserResponse])
+def get_profiles(
+    db:db_dependency,
+    current_user:models.User = Depends(get_current_user),
+    limit:int =20
+
+):
+    swiped_users = (
+        db.query(models.Like.liked_id).filter(models.Like.liker_id==current_user.id)
+    ).subquery()
+
+    profiles = db.query(models.User).filter(models.User.id!=current_user.id).filter(~models.User.id.in_(swiped_users)).all()
+
+    return profiles
 
 
+@app.post("/swipe")
+def swipe_profile(
+    like:schemas.LikeCreate,
+    db:db_dependency,
+    current_user:models.User = Depends(get_current_user)
+):
+    exists = db.query(models.Like).filter((models.Like.liker_id == current_user.id) & (models.Like.liked_id==like.liked_id)).first()
+    if exists:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Already liked this user"
+        )
+    new_like = models.Like(
+        liker_id =current_user.id ,
+        liked_id = like.liked_id,
+        status = like.status, 
+        
+    )
+    db.add(new_like)
+    db.commit()
+    db.refresh(new_like)
+
+
+    match = db.query(models.Like).filter((models.Like.liker_id==like.liked_id)&(models.Like.liked_id==current_user.id)).first()
+    if match:
+        new_match = models.Match(
+            user1_id = current_user.id,
+            user2_id = like.liked_id,
+         
+        )
+        db.add(new_match)
+        db.commit()
+        db.refresh(new_match)
+
+
+    return new_like

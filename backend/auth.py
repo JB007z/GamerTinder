@@ -3,7 +3,7 @@ import models, database
 from backend import schemas
 from datetime import datetime,timedelta
 from typing import Optional
-from fastapi import Depends
+from fastapi import Depends,HTTPException,status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
