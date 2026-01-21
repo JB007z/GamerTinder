@@ -60,4 +60,6 @@ def get_current_user(token:str = Depends(oauth2_scheme),db:Session = Depends(dat
     if user is None:
         raise credentials_exception
 
-    return user   
+    return user
+
+
