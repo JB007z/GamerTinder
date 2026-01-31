@@ -114,3 +114,8 @@ button{
     background-color: var(--accent-color);
     color: var(--base-color);
 }
+
+#error-div{
+    color: red;
+    display: none;
+}

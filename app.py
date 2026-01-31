@@ -1,5 +1,6 @@
 from fastapi import FastAPI,Depends,HTTPException,status
 from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from typing import List,Annotated
@@ -10,6 +11,14 @@ from backend.auth import get_current_user
 from datetime import timedelta,datetime,timezone
 import models
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # só para DEV
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 models.Base.metadata.create_all(bind=engine)
 db_dependency = Annotated[Session,Depends(get_db)]
 
@@ -19,9 +28,13 @@ def default_response():
 
 @app.post("/register/",response_model=schemas.UserResponse)
 def create_user(user:schemas.UserCreate,db:db_dependency):
-    user_check  = crud.get_user_by_email(db,user.email)
-    if user_check:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail="Email already being used")
+    email_check  = crud.get_user_by_email(db,user.email)
+    username_check = crud.get_user_by_username(db,user.username)
+    if email_check:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT,detail="Email already being used")
+    
+    if username_check:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT,detail="Username already being used")
 
     return crud.create_user(db=db,user=user)
 
@@ -55,7 +68,7 @@ def get_profiles(
         db.query(models.Like.liked_id).filter(models.Like.liker_id==current_user.id)
     ).subquery()
 
-    profiles = db.query(models.User).filter(models.User.id!=current_user.id).filter(~models.User.id.in_(swiped_users)).all()
+    profiles = db.query(models.User).filter(models.User.id!=current_user.id).filter(~models.User.id.in_(swiped_users)).limit(limit=limit)
 
     return profiles
 
