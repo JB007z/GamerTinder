@@ -1,18 +1,18 @@
-from pydantic import BaseModel,EmailStr
+from pydantic import BaseModel,EmailStr,Field
 from typing import List,Optional
 from datetime import datetime
 from enum import Enum
 
 
 class UserBase(BaseModel):
-    username:str
+    username:str=Field(min_length=4,max_length=20)
     email:EmailStr
     bio: Optional[str] = None
     profile_image: Optional[str] = None
 
 
 class UserCreate(UserBase):
-    raw_password: str
+    raw_password: str = Field(min_length=8,max_length=20)
 
 class UserUpdate(BaseModel):
     email:Optional[EmailStr] = None

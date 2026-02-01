@@ -28,14 +28,6 @@ def default_response():
 
 @app.post("/register/",response_model=schemas.UserResponse)
 def create_user(user:schemas.UserCreate,db:db_dependency):
-    email_check  = crud.get_user_by_email(db,user.email)
-    username_check = crud.get_user_by_username(db,user.username)
-    if email_check:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT,detail="Email already being used")
-    
-    if username_check:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT,detail="Username already being used")
-
     return crud.create_user(db=db,user=user)
 
 @app.post("/login")

@@ -2,8 +2,16 @@ from sqlalchemy.orm import Session
 import models
 from backend import schemas
 from backend.utils import Hash
+from fastapi import HTTPException,status
 
 def create_user(db: Session, user:schemas.UserCreate):
+    email_check  = db.query(models.User).filter(models.User.email ==user.email).first()
+    if email_check:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT,detail="Email already being used")
+    username_check = db.query(models.User).filter(models.User.username==user.username).first()
+    if username_check:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT,detail="Username already being used")
+    
     hashed_password = Hash.bcrypt(user.raw_password)
 
     new_user = models.User(
