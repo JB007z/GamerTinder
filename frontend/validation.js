@@ -54,10 +54,9 @@ form.addEventListener('submit',async(e)=>{
             
         }
         else if (status === 422) {
-        // Erro vindo do Schema (Tamanho de username/password)
-        // O FastAPI retorna uma lista de erros em 'detail'
-        const validationMsg = data?.detail?.[0]?.msg || "Dados inválidos.";
-        error_div.textContent = `Validation error: ${validationMsg}`;
+        let validationMsg = data?.detail?.[0]?.msg || "Dados inválidos.";
+        validationMsg = validationMsg.replace(/^Value error, /i, "");
+        error_div.textContent = validationMsg
     } 
     else {
         error_div.textContent = "Ocorreu um erro inesperado no servidor.";

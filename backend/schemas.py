@@ -1,18 +1,38 @@
-from pydantic import BaseModel,EmailStr,Field
+from pydantic import BaseModel,EmailStr,field_validator
 from typing import List,Optional
 from datetime import datetime
 from enum import Enum
 
 
 class UserBase(BaseModel):
-    username:str=Field(min_length=4,max_length=20)
+    username:str
     email:EmailStr
     bio: Optional[str] = None
     profile_image: Optional[str] = None
+    @field_validator('username')
+    @classmethod
+    def username_restraints(cls,v:str):
+        if not v.isalnum:
+            raise ValueError("Username must only contain numbers and letters!")
+        if (len(v)<4):
+            raise ValueError("Username must have at least 4 characters!")
+        if (len(v)>20):
+            raise ValueError("Username must have at most 20 characters!")
+        return v
+    
 
 
 class UserCreate(UserBase):
-    raw_password: str = Field(min_length=8,max_length=20)
+    raw_password: str  
+    @field_validator('raw_password')
+    @classmethod
+    def password_restraints(cls,v:str):
+        if v.isalnum:
+            raise ValueError("Password must contain at least one special symbol")
+        if (len(v)<4):
+            raise ValueError("Password must have at least 4 characters!")
+        if (len(v)>20):
+            raise ValueError("Password must have at most 20 characters!")
 
 class UserUpdate(BaseModel):
     email:Optional[EmailStr] = None
