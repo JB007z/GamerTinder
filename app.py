@@ -30,6 +30,8 @@ def default_response():
 def create_user(user:schemas.UserCreate,db:db_dependency):
     return crud.create_user(db=db,user=user)
 
+
+
 @app.post("/login")
 def login_user(form_data:Annotated[OAuth2PasswordRequestForm,Depends()],db:db_dependency):
     #we use form_data.username because its the default for the form_data object

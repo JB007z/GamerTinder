@@ -40,8 +40,7 @@ form.addEventListener('submit',async(e)=>{
     
     try {
         const{data} = await api.post('/register',user_data)
-        console.log(data);
-        
+        window.location.href = "/profile.html";        
         
     } catch (error) {
         error_div.style.display = "block";
