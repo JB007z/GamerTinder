@@ -27,7 +27,7 @@ form.addEventListener('submit',async(e)=>{
     const email = email_input.value
     const username = username_input.value
     const password =password_input.value
-    if(!username||!email|!password){
+    if(!username||!email||!password){
         error_div.style.display="block"
         error_div.textContent="All fields must be filled"
         return
@@ -39,8 +39,13 @@ form.addEventListener('submit',async(e)=>{
     }
     
     try {
-        const{data} = await api.post('/register',user_data)
-        window.location.href = "/profile.html";        
+        const{data} = await api.post('/register/',user_data)
+        console.log("Resposta do Servidor:", data); // VEJA ISSO NO CONSOLE (F12)
+        const{access_token,user} = data
+        
+        localStorage.setItem('token', access_token);
+        localStorage.setItem('userId', user.id);
+        window.location.href = "profile.html";        
         
     } catch (error) {
         error_div.style.display = "block";
@@ -59,6 +64,7 @@ form.addEventListener('submit',async(e)=>{
     } 
     else {
         error_div.textContent = "Ocorreu um erro inesperado no servidor.";
+        console.log(error)
     }
         
     }

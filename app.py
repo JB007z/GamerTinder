@@ -1,4 +1,4 @@
-from fastapi import FastAPI,Depends,HTTPException,status
+from fastapi import FastAPI,Depends,HTTPException,status,Form,File,UploadFile
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -26,12 +26,36 @@ db_dependency = Annotated[Session,Depends(get_db)]
 def default_response():
     return {"message":"Server is running lil bro"}
 
-@app.post("/register/",response_model=schemas.UserResponse)
+
+#rever response model que foi removido já que passamos a entregar token
+@app.post("/register/")
 def create_user(user:schemas.UserCreate,db:db_dependency):
-    return crud.create_user(db=db,user=user)
+    user = crud.create_user(db=db,user=user)
+    if user:
+        token = auth.create_acess_token(
+            data={
+            "sub":user.email
+        })
+        return {
+            "access_token":token,
+            "token_type":"bearer",
+            "user":user
+        }
+        
 
-
-
+@app.patch("/update_profile/")
+def update_user(
+    db:db_dependency,
+    bio:str=Form(None),
+    profile_image: UploadFile = File(None),
+    current_user:models.User = Depends(get_current_user)
+):
+    data = {
+        'profile_image':profile_image,
+        'bio':bio
+    }
+    user = crud.update_user(db=db,user_update=data,user_id=current_user.id)
+    return user
 @app.post("/login")
 def login_user(form_data:Annotated[OAuth2PasswordRequestForm,Depends()],db:db_dependency):
     #we use form_data.username because its the default for the form_data object

@@ -27,12 +27,14 @@ class UserCreate(UserBase):
     @field_validator('raw_password')
     @classmethod
     def password_restraints(cls,v:str):
-        if v.isalnum:
-            raise ValueError("Password must contain at least one special symbol")
         if (len(v)<4):
             raise ValueError("Password must have at least 4 characters!")
         if (len(v)>20):
             raise ValueError("Password must have at most 20 characters!")
+        if v.isalnum():
+            raise ValueError("Password must contain at least one special symbol")
+        
+        return v
 
 class UserUpdate(BaseModel):
     email:Optional[EmailStr] = None

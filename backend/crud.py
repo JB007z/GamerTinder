@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 import models
 from backend import schemas
 from backend.utils import Hash
-from fastapi import HTTPException,status
+from fastapi import HTTPException,status,UploadFile
 
 def create_user(db: Session, user:schemas.UserCreate):
     email_check  = db.query(models.User).filter(models.User.email ==user.email).first()
@@ -39,18 +39,23 @@ def get_user_by_username(db:Session,username:str):
     user = db.query(models.User).filter(models.User.username==username).first()
     return user
 
-def update_user(db:Session,user_id:int, user_update:schemas.UserUpdate):
+def update_user(db:Session,user_id:int, bio:str,profile_image:UploadFile):
     db_user = db.query(models.User).filter(models.User.id == user_id).first()
     if not db_user:
         return None
 
-    update_data = user_update.dict(exclude_unset=True)
-    for key,value in update_data.items():
-        setattr(db_user,key,value)
+    if bio:
+        db_user.bio = bio
+    
+    if profile_image:
+        os.makedirs("static", exist_ok=True)
+        file_path = f"static/{profile_image.filename}"
+        with open(file_path, "wb") as f:
+            f.write(profile_image.file.read())
+        db_user.profile_pic = file_path
 
-    #verificação dinamica não leva em conta update de senha e username
-    #esses updates acarretariam mais mudanças (hashed password e token)
 
+   
 
     db.add(db_user) #add pode tanto criar nova row como dar update em uma
     db.commit()
