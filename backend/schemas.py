@@ -12,7 +12,7 @@ class UserBase(BaseModel):
     @field_validator('username')
     @classmethod
     def username_restraints(cls,v:str):
-        if not v.isalnum:
+        if not v.isalnum():
             raise ValueError("Username must only contain numbers and letters!")
         if (len(v)<4):
             raise ValueError("Username must have at least 4 characters!")
