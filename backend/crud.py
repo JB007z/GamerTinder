@@ -1,5 +1,7 @@
-from sqlalchemy.orm import Session
+import os
 import models
+import shutil
+from sqlalchemy.orm import Session
 from backend import schemas
 from backend.utils import Hash
 from fastapi import HTTPException,status,UploadFile
@@ -50,9 +52,16 @@ def update_user(db:Session,user_id:int, bio:str,profile_image:UploadFile):
     if profile_image:
         os.makedirs("static", exist_ok=True)
         file_path = f"static/{profile_image.filename}"
-        with open(file_path, "wb") as f:
-            f.write(profile_image.file.read())
-        db_user.profile_pic = file_path
+        
+        # 1. Garante que o ponteiro está no início do arquivo
+        profile_image.file.seek(0)
+        
+        # 2. Salva o arquivo de forma eficiente
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(profile_image.file, buffer)
+            
+        # 3. Atualiza o campo com o caminho (path)
+        db_user.profile_image = file_path
 
 
    

@@ -50,11 +50,7 @@ def update_user(
     profile_image: UploadFile = File(None),
     current_user:models.User = Depends(get_current_user)
 ):
-    data = {
-        'profile_image':profile_image,
-        'bio':bio
-    }
-    user = crud.update_user(db=db,user_update=data,user_id=current_user.id)
+    user = crud.update_user(db=db,user_id=current_user.id,bio=bio,profile_image=profile_image)
     return user
 @app.post("/login")
 def login_user(form_data:Annotated[OAuth2PasswordRequestForm,Depends()],db:db_dependency):

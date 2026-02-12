@@ -27,7 +27,7 @@ form.addEventListener('submit',async(e)=>{
     try {
         
         const {data} = await api.patch("/update_profile/",formData,{
-            Headers:{
+            headers:{
                 'Authorization':`Bearer ${token}`,
                 'Content-Type': 'multipart/form-data'
             }

@@ -14,7 +14,7 @@ load_dotenv()
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
-ACESS_TOKEN_EXPIRES = 30
+ACESS_TOKEN_EXPIRES = 60*24
 
 pwd_context = CryptContext(schemes=["argon2"],deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
@@ -48,9 +48,11 @@ def get_current_user(token:str = Depends(oauth2_scheme),db:Session = Depends(dat
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
+
         payload = jwt.decode(token,SECRET_KEY,algorithms=[ALGORITHM])
         email:str = payload.get("sub")
         if email is None:
+            print("no email")
             raise credentials_exception
         token_data =schemas.TokenData(email=email)
     except JWTError:
@@ -58,6 +60,7 @@ def get_current_user(token:str = Depends(oauth2_scheme),db:Session = Depends(dat
 
     user = db.query(models.User).filter(models.User.email == token_data.email).first()
     if user is None:
+        print("no user")
         raise credentials_exception
 
     return user
