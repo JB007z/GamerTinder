@@ -52,7 +52,7 @@ def update_user(
 ):
     user = crud.update_user(db=db,user_id=current_user.id,bio=bio,profile_image=profile_image)
     return user
-@app.post("/login")
+@app.post("/login/")
 def login_user(form_data:Annotated[OAuth2PasswordRequestForm,Depends()],db:db_dependency):
     #we use form_data.username because its the default for the form_data object
     #even if its the email and not the username (its just the name of the field)

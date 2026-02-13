@@ -40,7 +40,6 @@ form.addEventListener('submit',async(e)=>{
     
     try {
         const{data} = await api.post('/register/',user_data)
-        console.log("Resposta do Servidor:", data); // VEJA ISSO NO CONSOLE (F12)
         const{access_token,user} = data
         
         localStorage.setItem('token', access_token);

@@ -1,0 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+:root{
+    --accent-color:#8672FF;
+    --base-color:white;
+    --text-color:#2E2B41;
+    --input-color: #F3F0FF;
+}
+*{
+    margin: 0;
+    padding: 0;
+}
+
+html{
+    font-family: Poppins;
+    font-size: 14pt;
+    color: var(--text-color);
+    text-align: center;
+}
+
+
+body{
+    min-height: 100vh;
+    background-image: url(img/BACKGROUND.jpg) ;
+    background-size: cover;
+    background-position: right;
+        overflow: hidden;
+
+}
+
+h1{
+    font-weight: 900;
+    font-size: 2rem;
+    text-transform: uppercase;
+}
+.wrapper{
+    box-sizing: border-box;
+    background-color: var(--base-color);
+    height: 100vh;
+    width: max(40%,600px);
+    padding: 10px;
+    border-radius:0 20px 20px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+form{
+    width: min(400px,100%);
+    margin-top: 20px;
+    margin-bottom: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap:10px
+}
+
+
+form>div{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+form label{
+    background-color: var(--accent-color);
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    fill: var(--base-color);
+    color: var(--base-color);
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+form input{
+    box-sizing: border-box;
+    flex-grow: 1;
+    min-width: 0;
+    height: 50px;
+    padding:1em;
+    font:inherit;
+    border-radius: 0 10px 10px 0;
+    border:solid 2px var(--input-color);
+    border-left: none;
+    background-color: var(--input-color);
+    transition: 150ms ease;
+
+}
+
+
+form input:hover{
+    border-color: var(--accent-color);
+}
+
+form input:focus{
+    border-color: var(--text-color);
+}
+div:has(input:focus)>label{
+    background-color: var(--text-color);
+}
+
+button{
+    margin-top: 10px;
+    cursor: pointer;
+    font: inherit;
+    font-weight: 600;
+    border: none;
+    padding:0.85em 4em;
+
+    border-radius: 1000px;
+    background-color: var(--accent-color);
+    color: var(--base-color);
+}
+
+#error-div{
+    color: red;
+    display: none;
+}
