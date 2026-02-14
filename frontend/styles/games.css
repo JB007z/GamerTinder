@@ -213,3 +213,8 @@
       outline: 2px solid var(--primary);
       outline-offset: 2px;
     }
+    
+  #error-div{
+      color: red;
+      display: none;
+  }
