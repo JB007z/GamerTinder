@@ -20,6 +20,7 @@ def create_user(db: Session, user:schemas.UserCreate):
 
         username = user.username,
         email = user.email,
+        platform= user.platform,
         bio = user.bio,
         profile_image= user.profile_image,
         hashed_password=hashed_password
@@ -80,3 +81,9 @@ def remove_user(db:Session, user_id:int):
         return True
     
     return False
+
+
+
+def find_game_by_name(db:Session,name:str):
+    game = db.query(models.Game).filter(models.Game.name==name).first()
+    return game

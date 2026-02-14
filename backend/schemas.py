@@ -2,11 +2,12 @@ from pydantic import BaseModel,EmailStr,field_validator
 from typing import List,Optional
 from datetime import datetime
 from enum import Enum
-
+from models import PlatformPreference
 
 class UserBase(BaseModel):
     username:str
     email:EmailStr
+    platform:PlatformPreference
     bio: Optional[str] = None
     profile_image: Optional[str] = None
     @field_validator('username')

@@ -102,6 +102,66 @@ div:has(input:focus)>label{
     background-color: var(--text-color);
 }
 
+.platform-container {
+    width: 100%;
+    margin: 10px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.platform-options {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    width: 100%;
+}
+
+/* Esconde o rádio padrão */
+.platform-options input[type="radio"] {
+    display: none;
+}
+
+/* Estilo das imagens/cards */
+.platform-card {
+    width: 50px;
+    height: 50px;
+    background-color: var(--input-color);
+    border: 2px solid transparent;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 10px;
+}
+
+.platform-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: grayscale(1) opacity(0.6);
+    transition: all 0.2s ease;
+}
+
+/* Efeito Hover */
+.platform-card:hover {
+    border-color: var(--accent-color);
+    transform: translateY(-3px);
+}
+
+/* Estado Selecionado (Quando o rádio estiver checado) */
+.platform-options input[type="radio"]:checked + .platform-card {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    box-shadow: 0 5px 15px rgba(134, 114, 255, 0.4);
+}
+
+.platform-options input[type="radio"]:checked + .platform-card img {
+    filter: grayscale(0) brightness(0) invert(1); /* Deixa o ícone branco no fundo roxo */
+    transform: scale(1.1);
+}
 button{
     margin-top: 10px;
     cursor: pointer;

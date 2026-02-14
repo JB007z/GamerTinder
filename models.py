@@ -1,7 +1,8 @@
-from sqlalchemy import Boolean,Column,ForeignKey,Integer,String,Table,DateTime,UniqueConstraint
+from sqlalchemy import Boolean,Column,ForeignKey,Integer,String,Enum,Table,DateTime,UniqueConstraint
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from database import Base
+import enum
 
 user_games_association = Table(
     'user_games',
@@ -9,6 +10,11 @@ user_games_association = Table(
     Column('user_id',Integer,ForeignKey('users.id'),primary_key=True),
     Column('game_id',Integer,ForeignKey('games.id'),primary_key=True)
 )
+
+class PlatformPreference(str,enum.Enum):
+    PLAYSTATION = 'playstation'
+    XBOX = 'xbox'
+    PC = 'pc'
 
 class User(Base):
     __tablename__ = 'users'
@@ -18,7 +24,10 @@ class User(Base):
     hashed_password = Column(String)
     bio = Column(String,nullable=True)
     profile_image= Column(String,nullable=True)
-    
+    platform = Column(
+        Enum(PlatformPreference, name="platform_enum"), 
+        nullable=False
+    )
     games = relationship("Game",secondary=user_games_association,back_populates="players")
 
 
@@ -27,8 +36,6 @@ class Game(Base):
     id = Column(Integer, primary_key=True,index = True)
     name = Column(String,unique=True,index=True)
     genre = Column(String,index=True)
-    platform = Column(String,index=True)
-
     players = relationship("User",secondary=user_games_association,back_populates="games")
 
 
