@@ -1,0 +1,215 @@
+/* ========== RESET & BASE ========== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    :root {
+      --bg: hsl(230, 15%, 8%);
+      --fg: hsl(220, 20%, 92%);
+      --card: hsl(230, 15%, 12%);
+      --card-hover: hsl(230, 15%, 18%);
+      --border: hsl(230, 15%, 20%);
+      --muted: hsl(220, 10%, 50%);
+      --primary: hsl(160, 100%, 45%);
+      --primary-dark: hsl(230, 15%, 8%);
+      --neon-glow: 160, 100%, 45%;
+    }
+    body {
+      font-family: 'Rajdhani', sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 3rem 1rem 4rem;
+      -webkit-font-smoothing: antialiased;
+    }
+    /* ========== LAYOUT ========== */
+    .container {
+      width: 100%;
+      max-width: 900px;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    .header h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.75rem;
+    }
+    .header h1 .accent {
+      color: var(--primary);
+      text-shadow: 0 0 10px hsl(var(--neon-glow) / 0.5),
+                   0 0 30px hsl(var(--neon-glow) / 0.3);
+    }
+    .header p {
+      font-size: 1.15rem;
+      color: var(--muted);
+    }
+    /* ========== GAME GRID ========== */
+    .game-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+    @media (min-width: 540px) {
+      .game-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (min-width: 768px) {
+      .game-grid { grid-template-columns: repeat(4, 1fr); gap: 1.25rem; }
+      .header h1 { font-size: 2.5rem; }
+    }
+    /* Hide native checkbox */
+    .game-grid input[type="checkbox"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    /* ========== GAME CARD ========== */
+    .game-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem;
+      border-radius: 0.75rem;
+      border: 2px solid var(--border);
+      background: var(--card);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .game-card:hover {
+      background: var(--card-hover);
+      border-color: var(--muted);
+    }
+    /* Selected state */
+    input[type="checkbox"]:checked + .game-card {
+      border-color: var(--primary);
+      box-shadow: 0 0 10px hsl(var(--neon-glow) / 0.3),
+                  0 0 30px hsl(var(--neon-glow) / 0.15),
+                  0 0 60px hsl(var(--neon-glow) / 0.05);
+    }
+    /* ========== GAME ICON (placeholder) ========== */
+    .game-icon {
+      width: 8rem;
+      height: 8rem;
+      border-radius: 0.5rem;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      text-align: center;
+      line-height: 1.2;
+      transition: all 0.3s ease;
+      filter: grayscale(100%) brightness(0.5);
+      padding: 5px;
+    }
+    .game-card:hover .game-icon {
+      filter: grayscale(0%) brightness(1);
+    }
+    input[type="checkbox"]:checked + .game-card .game-icon {
+      filter: grayscale(0%) brightness(1.1);
+     
+    }
+    /* Individual game icon colors */
+    .game-icon.gta       { background:white; }
+    .game-icon.amongus   { background: white; }
+    .game-icon.cod       { background:white}
+    .game-icon.overwatch   { background: white }
+    .game-icon.minecraft {background: white;}
+    /* Garante que qualquer imagem dentro de um ícone de jogo se comporte corretamente */
+    .game-icon img {
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+        object-fit: contain; 
+        display: block;
+    }
+    /* ========== GAME NAME ========== */
+    .game-name {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      transition: color 0.3s ease;
+      text-align: center;
+    }
+    .game-card:hover .game-name {
+      color: var(--fg);
+    }
+    
+    /* ========== CHECK BADGE ========== */
+    .check-badge {
+      position: absolute;
+      top: -0.5rem;
+      right: -0.5rem;
+      width: 1.25rem;
+      height: 1.25rem;
+      background: var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transform: scale(0);
+      transition: all 0.25s ease;
+    }
+    input[type="checkbox"]:checked + .game-card .check-badge {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .check-badge svg {
+      width: 12px;
+      height: 12px;
+    }
+    /* ========== FOOTER ========== */
+    .footer {
+      margin-top: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .footer .counter {
+      font-size: 0.875rem;
+      color: var(--muted);
+    }
+    .submit-btn {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.85rem 2.75rem;
+      border: none;
+      border-radius: 0.75rem;
+      background: var(--primary);
+      color: var(--primary-dark);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .submit-btn:hover {
+      filter: brightness(1.15);
+      box-shadow: 0 0 15px hsl(var(--neon-glow) / 0.5),
+                  0 0 40px hsl(var(--neon-glow) / 0.25);
+    }
+    .submit-btn:active {
+      transform: scale(0.97);
+    }
+    /* Focus-visible for accessibility */
+    .game-card:focus-within {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }

@@ -1,26 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="../styles/games.css" class="rel">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pick Your Games</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../styles/games.css" class="rel">
 </head>
 <body>
-    <h1>Choose your favorite games!</h1>
-    <div class="input-group">
-                <label for="fav-game">Favorite Game</label>
-                <select id="fav-game" name="fav-game">
-                    <option value="" disabled selected>Select a game...</option>
-                    <option value="league-of-legends">League of Legends</option>
-                    <option value="valorant">Valorant</option>
-                    <option value="minecraft">Minecraft</option>
-                    <option value="cs-go">CS:GO</option>
-                    <option value="elden-ring">Elden Ring</option>
-                </select>
-            </div>
-    
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="../scripts/games.js"></script>
+  <div class="container">
+    <div class="header">
+      <h1>Pick Your <span class="accent">Games</span></h1>
+      <p>Select the games you play — this helps us find your perfect match.</p>
+    </div>
+    <form class="game-grid" id="gameForm">
+      <input type="checkbox" id="lol" name="games" value="League of Legends" />
+      <label class="game-card" for="lol">
+        <div class="game-icon lol"><img src="../img/logos/LOL.png" alt=""></div>
+        <span class="game-name">League of Legends</span>
+        <span class="check-badge"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="hsl(230,15%,8%)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </label>
+      <input type="checkbox" id="valorant" name="games" value="Valorant" />
+      <label class="game-card" for="valorant">
+        <div class="game-icon valorant"><img src="../img/logos/valorant.png" alt=""></div>
+        <span class="game-name">Valorant</span>
+        <span class="check-badge"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="hsl(230,15%,8%)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </label>
+      <input type="checkbox" id="cs2" name="games" value="CS2" />
+      <label class="game-card" for="cs2">
+        <div class="game-icon cs2"><img src="../img/logos/cs.png" alt=""></div>
+        <span class="game-name">CS2</span>
+        <span class="check-badge"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="hsl(230,15%,8%)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </label>
+      <input type="checkbox" id="fortnite" name="games" value="Fortnite" />
+      <label class="game-card" for="fortnite">
+        <div class="game-icon fortnite"><img src="../img/logos/fortnite.png" alt=""></div>
+        <span class="game-name">Fortnite</span>
+        <span class="check-badge"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="hsl(230,15%,8%)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </label>
+      <input type="checkbox" id="minecraft" name="games" value="Minecraft" />
+      <label class="game-card" for="minecraft">
+        <div class="game-icon minecraft"><img src="../img/logos/minecraft.svg" alt=""></div>
+        <span class="game-name">Minecraft</span>
+        <span class="check-badge"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="hsl(230,15%,8%)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </label>
+      <input type="checkbox" id="apex" name="games" value="Apex Legends" />
+      <label class="game-card" for="apex">
+        <div class="game-icon apex"><img src="../img/logos/Apex.png" alt=""></div>
+        <span class="game-name">Apex Legends</span>
+        <span class="check-badge"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="hsl(230,15%,8%)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </label>
+      <input type="checkbox" id="gta" name="games" value="GTA V" />
+      <label class="game-card" for="gta">
+        <div class="game-icon gta"><img src="../img/logos/gta.png" alt=""></div>
+        <span class="game-name">GTA V</span>
+        <span class="check-badge"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="hsl(230,15%,8%)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </label>
+      <input type="checkbox" id="rocket" name="games" value="Rocket League" />
+      <label class="game-card" for="rocket">
+        <div class="game-icon rocket"><img src="../img/logos/rl.jpg" alt=""></div>
+        <span class="game-name">Rocket League</span>
+        <span class="check-badge"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="hsl(230,15%,8%)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </label>
+      <input type="checkbox" id="overwatch" name="games" value="Overwatch" />
+      <label class="game-card" for="overwatch">
+        <div class="game-icon overwatch"><img src="../img/logos/overwatch.png" alt=""></div>
+        <span class="game-name">Overwatch</span>
+        <span class="check-badge"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="hsl(230,15%,8%)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </label>
+      <input type="checkbox" id="fifa" name="games" value="EA Sports FC" />
+      <label class="game-card" for="fifa">
+        <div class="game-icon fifa"><img src="../img/logos/fifa.png" alt=""></div>
+        <span class="game-name">EA Sports FC</span>
+        <span class="check-badge"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="hsl(230,15%,8%)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </label>
+      <input type="checkbox" id="cod" name="games" value="Call of Duty" />
+      <label class="game-card" for="cod">
+        <div class="game-icon cod"><img src="../img/logos/cod2.png" alt=""></div>
+        <span class="game-name">Call of Duty</span>
+        <span class="check-badge"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="hsl(230,15%,8%)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </label>
+      <input type="checkbox" id="amongus" name="games" value="Among Us" />
+      <label class="game-card" for="amongus">
+        <div class="game-icon amongus"><img src="../img/logos/among.png" alt=""></div>
+        <span class="game-name">Among Us</span>
+        <span class="check-badge"><svg viewBox="0 0 12 12" fill="none"><path d="M2 6L5 9L10 3" stroke="hsl(230,15%,8%)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </label>
+    </form>
+    <div class="footer">
+      <button type="submit" form="gameForm" class="submit-btn">Continue</button>
+    </div>
+  </div>
 </body>
 </html>
