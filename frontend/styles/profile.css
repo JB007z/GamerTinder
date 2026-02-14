@@ -21,7 +21,7 @@ html {
 
 body {
     min-height: 100vh;
-    background-image: url('img/BACKGROUND.jpg');
+    background-image: url(../img/BACKGROUND.jpg);
     background-size: cover;
     background-position: center;
     background-attachment: fixed; /* O fundo não rola junto com o form */
