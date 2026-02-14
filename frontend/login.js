@@ -1,5 +1,5 @@
 const api = axios.create({
-    baseURL:"http;//localhost:8080"
+    baseURL:"http://localhost:8080"
 })
 
 const form = document.getElementById('form')
@@ -27,9 +27,11 @@ form.addEventListener('submit',async(e)=>{
         error_div.style.display = "block"
         error_div.innerText = "All fields must be filled"
     }
+    
     const params = new URLSearchParams()
     params.append("username",email)
     params.append("password",password)
+    
     try {
         const response = await api.post('/login/',params,{
 
@@ -39,9 +41,10 @@ form.addEventListener('submit',async(e)=>{
         }
         )
         localStorage.setItem('token',response.data.access_token)
-        console.log("Login Realizado ",response.data)    
     } catch (error) {
-        console.log(error.response?.data);
+        error_div.style.display = "block"
+        error_div.innerText = error.response?.data.detail
+        
     }
 
 })
