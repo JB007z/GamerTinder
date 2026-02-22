@@ -1,11 +1,593 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Main</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GameMatch — Find Your Duo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    /* ========== RESET & BASE ========== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: hsl(230, 15%, 8%);
+      --fg: hsl(220, 20%, 92%);
+      --card: hsl(230, 15%, 12%);
+      --card-hover: hsl(230, 15%, 16%);
+      --border: hsl(230, 15%, 20%);
+      --muted: hsl(220, 10%, 50%);
+      --primary: hsl(160, 100%, 45%);
+      --primary-dark: hsl(230, 15%, 8%);
+      --neon-glow: 160, 100%, 45%;
+      --danger: hsl(0, 80%, 55%);
+      --danger-glow: 0, 80%, 55%;
+      --like: hsl(160, 100%, 45%);
+      --like-glow: 160, 100%, 45%;
+    }
+
+    body {
+      font-family: 'Rajdhani', sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      min-height: 100vh;
+      display: flex;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ========== LAYOUT ========== */
+    .app {
+      display: flex;
+      width: 100%;
+      min-height: 100vh;
+    }
+
+    /* ========== MAIN AREA ========== */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      position: relative;
+    }
+
+    .logo {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      position: absolute;
+      top: 1.5rem;
+      left: 2rem;
+    }
+
+    .logo .accent { color: var(--primary); }
+
+    /* ========== CARD STACK ========== */
+    .card-stack {
+      position: relative;
+      width: 380px;
+      height: 520px;
+    }
+
+    .user-card {
+      position: absolute;
+      inset: 0;
+      border-radius: 1rem;
+      border: 2px solid var(--border);
+      background: var(--card);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.4s ease, opacity 0.4s ease;
+    }
+
+    /* Stacked cards behind */
+    .user-card:nth-child(2) {
+      transform: scale(0.95) translateY(12px);
+      opacity: 0.6;
+      z-index: 1;
+    }
+
+    .user-card:nth-child(3) {
+      transform: scale(0.9) translateY(24px);
+      opacity: 0.3;
+      z-index: 0;
+    }
+
+    .user-card:first-child {
+      z-index: 2;
+    }
+
+    /* ========== CARD IMAGE ========== */
+    .card-image {
+      width: 100%;
+      height: 55%;
+      background: linear-gradient(135deg, hsl(230, 20%, 18%), hsl(260, 30%, 25%));
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-image .avatar-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 3rem;
+      font-weight: 700;
+      color: hsl(220, 10%, 35%);
+    }
+
+    .online-badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: hsl(160, 100%, 45%);
+      color: var(--primary-dark);
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
+    }
+
+    /* ========== CARD INFO ========== */
+    .card-info {
+      padding: 1.25rem 1.5rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .card-name {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .card-bio {
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .card-games {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: auto;
+    }
+
+    .game-tag {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      padding: 0.3rem 0.65rem;
+      border-radius: 0.4rem;
+      border: 1px solid var(--border);
+      background: hsl(230, 15%, 15%);
+      color: var(--muted);
+      transition: all 0.2s ease;
+    }
+
+    .game-tag.shared {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: hsl(160, 100%, 45%, 0.08);
+    }
+
+    /* ========== SWIPE BUTTONS ========== */
+    .swipe-actions {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 2rem;
+      align-items: center;
+    }
+
+    .swipe-btn {
+      width: 3.5rem;
+      height: 3.5rem;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      background: var(--card);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.25s ease;
+    }
+
+    .swipe-btn svg {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+
+    .swipe-btn.pass {
+      color: var(--danger);
+    }
+
+    .swipe-btn.pass:hover {
+      border-color: var(--danger);
+      background: hsl(var(--danger-glow) / 0.1);
+      box-shadow: 0 0 15px hsl(var(--danger-glow) / 0.3);
+    }
+
+    .swipe-btn.like {
+      color: var(--like);
+      width: 4rem;
+      height: 4rem;
+    }
+
+    .swipe-btn.like:hover {
+      border-color: var(--like);
+      background: hsl(var(--like-glow) / 0.1);
+      box-shadow: 0 0 15px hsl(var(--like-glow) / 0.3),
+                  0 0 40px hsl(var(--like-glow) / 0.15);
+    }
+
+    .swipe-btn:active {
+      transform: scale(0.92);
+    }
+
+    /* ========== SIDEBAR ========== */
+    .sidebar {
+      width: 300px;
+      border-left: 1px solid var(--border);
+      background: hsl(230, 15%, 10%);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .sidebar-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar-header h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--primary);
+      text-transform: uppercase;
+    }
+
+    .sidebar-header .match-count {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 0.25rem;
+    }
+
+    /* ========== MATCH LIST ========== */
+    .match-list {
+      list-style: none;
+      padding: 0.5rem 0;
+    }
+
+    .match-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.85rem 1.5rem;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .match-item:hover {
+      background: var(--card-hover);
+    }
+
+    .match-avatar {
+      width: 2.75rem;
+      height: 2.75rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .match-avatar.a1 { background: linear-gradient(135deg, hsl(280, 60%, 30%), hsl(320, 70%, 50%)); color: hsl(320, 70%, 85%); }
+    .match-avatar.a2 { background: linear-gradient(135deg, hsl(200, 70%, 25%), hsl(180, 80%, 45%)); color: hsl(180, 80%, 85%); }
+    .match-avatar.a3 { background: linear-gradient(135deg, hsl(30, 70%, 25%), hsl(45, 90%, 55%)); color: hsl(45, 90%, 90%); }
+    .match-avatar.a4 { background: linear-gradient(135deg, hsl(0, 60%, 25%), hsl(15, 80%, 50%)); color: hsl(15, 80%, 85%); }
+
+    .match-details {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .match-name {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+
+    .match-games {
+      font-size: 0.8rem;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .match-time {
+      margin-left: auto;
+      font-size: 0.7rem;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+
+    .new-badge {
+      width: 8px;
+      height: 8px;
+      background: var(--primary);
+      border-radius: 50%;
+      margin-left: auto;
+      flex-shrink: 0;
+      box-shadow: 0 0 6px hsl(var(--neon-glow) / 0.6);
+    }
+
+    /* ========== EMPTY STATE ========== */
+    .empty-state {
+      padding: 2rem 1.5rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    /* ========== MATCH NOTIFICATION OVERLAY ========== */
+    .match-overlay {
+      position: fixed;
+      inset: 0;
+      background: hsl(230, 15%, 8%, 0.92);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 1.5rem;
+      z-index: 100;
+    }
+
+    .match-overlay.active {
+      display: flex;
+    }
+
+    .match-overlay h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: var(--primary);
+      text-shadow: 0 0 20px hsl(var(--neon-glow) / 0.6),
+                   0 0 60px hsl(var(--neon-glow) / 0.3);
+    }
+
+    .match-overlay p {
+      color: var(--muted);
+      font-size: 1.1rem;
+    }
+
+    .match-overlay .match-avatars {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .match-overlay .big-avatar {
+      width: 5rem;
+      height: 5rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      border: 3px solid var(--primary);
+      box-shadow: 0 0 20px hsl(var(--neon-glow) / 0.4);
+    }
+
+    .match-overlay .big-avatar.you { background: linear-gradient(135deg, hsl(200, 70%, 25%), hsl(220, 80%, 40%)); color: hsl(220, 80%, 85%); }
+    .match-overlay .big-avatar.them { background: linear-gradient(135deg, hsl(280, 60%, 30%), hsl(320, 70%, 50%)); color: hsl(320, 70%, 85%); }
+
+    .match-overlay .heart-icon {
+      color: var(--primary);
+      font-size: 2rem;
+    }
+
+    .match-overlay .dismiss-btn {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.7rem 2rem;
+      border: 2px solid var(--primary);
+      border-radius: 0.75rem;
+      background: transparent;
+      color: var(--primary);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 1rem;
+    }
+
+    .match-overlay .dismiss-btn:hover {
+      background: var(--primary);
+      color: var(--primary-dark);
+      box-shadow: 0 0 15px hsl(var(--neon-glow) / 0.5);
+    }
+
+    /* ========== RESPONSIVE ========== */
+    @media (max-width: 768px) {
+      .app { flex-direction: column; }
+
+      .sidebar {
+        width: 100%;
+        border-left: none;
+        border-top: 1px solid var(--border);
+        max-height: 35vh;
+      }
+
+      .card-stack {
+        width: 320px;
+        height: 440px;
+      }
+
+      .logo {
+        position: static;
+        text-align: center;
+        margin-bottom: 1.5rem;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .card-stack {
+        width: 280px;
+        height: 400px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <h1>Yoooo</h1>
+  <div class="app">
+    <!-- MAIN SWIPE AREA -->
+    <div class="main">
+      <div class="logo">GAME<span class="accent">MATCH</span></div>
+
+      <!-- Card Stack -->
+      <div class="card-stack">
+        <!-- Card 1 (top) -->
+        <div class="user-card">
+          <div class="card-image" style="background: linear-gradient(135deg, hsl(280, 60%, 20%), hsl(320, 50%, 30%));">
+            <div class="avatar-placeholder">N1</div>
+            <span class="online-badge">ONLINE</span>
+          </div>
+          <div class="card-info">
+            <div class="card-name">NightOwl_99</div>
+            <div class="card-bio">Chill vibes only. Always down for ranked at 2AM. Support main looking for a carry duo.</div>
+            <div class="card-games">
+              <span class="game-tag shared">VAL</span>
+              <span class="game-tag shared">LOL</span>
+              <span class="game-tag">CS2</span>
+              <span class="game-tag">OW</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 (behind) -->
+        <div class="user-card">
+          <div class="card-image" style="background: linear-gradient(135deg, hsl(200, 60%, 20%), hsl(180, 50%, 30%));">
+            <div class="avatar-placeholder">ZR</div>
+          </div>
+          <div class="card-info">
+            <div class="card-name">Z3roGravity</div>
+            <div class="card-bio">Cracked aim, no mic. Building my way to Champions.</div>
+            <div class="card-games">
+              <span class="game-tag shared">FN</span>
+              <span class="game-tag">APEX</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 (furthest back) -->
+        <div class="user-card">
+          <div class="card-image" style="background: linear-gradient(135deg, hsl(30, 60%, 20%), hsl(45, 50%, 30%));">
+            <div class="avatar-placeholder">SK</div>
+          </div>
+          <div class="card-info">
+            <div class="card-name">SkyBreaker</div>
+            <div class="card-bio">Minecraft all day. Also play RL competitively.</div>
+            <div class="card-games">
+              <span class="game-tag shared">MC</span>
+              <span class="game-tag">RL</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Swipe Buttons -->
+      <div class="swipe-actions">
+        <button class="swipe-btn pass" aria-label="Pass">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+        <button class="swipe-btn like" aria-label="Like">
+          <svg viewBox="0 0 24 24" fill="currentColor" stroke="none">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- MATCHES SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2>Matches</h2>
+        <div class="match-count">4 connections</div>
+      </div>
+      <ul class="match-list">
+        <li class="match-item">
+          <div class="match-avatar a1">PX</div>
+          <div class="match-details">
+            <span class="match-name">PixelQueen</span>
+            <span class="match-games">Valorant, Fortnite</span>
+          </div>
+          <span class="new-badge"></span>
+        </li>
+        <li class="match-item">
+          <div class="match-avatar a2">BZ</div>
+          <div class="match-details">
+            <span class="match-name">BlazeTitan</span>
+            <span class="match-games">CS2, LOL, Apex</span>
+          </div>
+          <span class="match-time">2h</span>
+        </li>
+        <li class="match-item">
+          <div class="match-avatar a3">VK</div>
+          <div class="match-details">
+            <span class="match-name">VoidKnight</span>
+            <span class="match-games">Minecraft, GTA V</span>
+          </div>
+          <span class="match-time">1d</span>
+        </li>
+        <li class="match-item">
+          <div class="match-avatar a4">RX</div>
+          <div class="match-details">
+            <span class="match-name">R3flexShot</span>
+            <span class="match-games">Valorant, Overwatch</span>
+          </div>
+          <span class="match-time">3d</span>
+        </li>
+      </ul>
+    </aside>
+  </div>
+
+  <!-- MATCH NOTIFICATION OVERLAY (hidden by default) -->
+  <div class="match-overlay" id="matchOverlay">
+    <h2>IT'S A MATCH!</h2>
+    <div class="match-avatars">
+      <div class="big-avatar you">YOU</div>
+      <span class="heart-icon">♥</span>
+      <div class="big-avatar them">N1</div>
+    </div>
+    <p>You and <strong>NightOwl_99</strong> both play Valorant &amp; LOL</p>
+    <button class="dismiss-btn" onclick="document.getElementById('matchOverlay').classList.remove('active')">Keep Swiping</button>
+  </div>
 </body>
 </html>
