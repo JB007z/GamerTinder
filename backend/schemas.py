@@ -57,6 +57,9 @@ class GameBase(BaseModel):
 class GameCreate(GameBase):
     pass
 
+class GameUpdate(BaseModel):
+    games: List[str]
+
 
 class GameResponse(GameBase):
     id:int

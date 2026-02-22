@@ -87,7 +87,7 @@ def get_profiles(
     return profiles
 
 
-@app.post("/swipe")
+@app.post("/swipe/")
 def swipe_profile(
     like:schemas.LikeCreate,
     db:db_dependency,
@@ -126,7 +126,7 @@ def swipe_profile(
 
 
 
-@app.get("/matches")
+@app.get("/matches/")
 def get_matches(
     db:db_dependency,
     user:models.User=Depends(get_current_user)
@@ -134,3 +134,13 @@ def get_matches(
 
     matches = db.query(models.Match).filter((models.Match.user1_id==user.id)|(models.Match.user2_id==user.id)).order_by(models.Match.timestamp.desc()).all()
     return matches
+
+
+@app.post("/games/")
+def update_games(
+    db:db_dependency,
+    games_data:schemas.GameUpdate,
+    user:models.User=Depends(get_current_user),
+):
+    
+    return crud.update_user_games(db=db,user_id=user.id,game_names=games_data.games)
