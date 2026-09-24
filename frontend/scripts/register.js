@@ -54,7 +54,7 @@ form.addEventListener('submit',async(e)=>{
         
         localStorage.setItem('token', access_token);
         localStorage.setItem('userId', user.id);
-        window.location.href = "games.html";        
+        window.location.href = "profile.html";        
         
     } catch (error) {
         error_div.style.display = "block";

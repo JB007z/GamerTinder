@@ -53,9 +53,9 @@ SECRET_KEY=your_super_secret_key_here
 
 **5. Run the Application**
 ```bash
-uvicorn app:app --reload
+uvicorn app:app --port 8080 --reload  (use port 8080 for Frontend integration)
 ```
-The server will start on `http://127.0.0.1:8000`. You can access the interactive Swagger API documentation by navigating to `http://127.0.0.1:8000/docs`.
+The server will start on `http://127.0.0.1:8080`. You can access the interactive Swagger API documentation by navigating to `http://127.0.0.1:8080/docs`.
 
 ## 📍 Key API Endpoints
 

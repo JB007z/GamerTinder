@@ -33,6 +33,8 @@ form.addEventListener('submit',async(e)=>{
             }
         })
         console.log("Success: ",data.user);
+        window.location.href = "games.html";        
+
     } catch (error) {
         console.error("Erro", error.response?.data)
     }

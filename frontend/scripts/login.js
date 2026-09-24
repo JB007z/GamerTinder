@@ -41,6 +41,8 @@ form.addEventListener('submit',async(e)=>{
         }
         )
         localStorage.setItem('token',response.data.access_token)
+        window.location.href = "index.html";        
+
     } catch (error) {
         error_div.style.display = "block"
         error_div.innerText = error.response?.data.detail
