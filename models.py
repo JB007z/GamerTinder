@@ -23,7 +23,7 @@ class User(Base):
     email = Column(String,unique=True,index=True)
     hashed_password = Column(String)
     bio = Column(String,nullable=True)
-    profile_image= Column(String,nullable=True)
+    profile_image = Column(String,nullable=True)
     platform = Column(
         Enum(PlatformPreference, name="platform_enum"), 
         nullable=False
