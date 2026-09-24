@@ -5,7 +5,7 @@ pwd_context = CryptContext(schemes=["argon2"],deprecated="auto")
 
 class Hash:
     @staticmethod
-    def bcrypt(password:str):
+    def hash_password(password:str):
         return pwd_context.hash(password)
 
 

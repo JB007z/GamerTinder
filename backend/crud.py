@@ -15,7 +15,7 @@ def create_user(db: Session, user:schemas.UserCreate):
     if username_check:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT,detail="Username already being used")
     
-    hashed_password = Hash.bcrypt(user.raw_password)
+    hashed_password = Hash.hash_password(user.raw_password)
 
     new_user = models.User(
 
