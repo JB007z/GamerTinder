@@ -28,7 +28,7 @@ def default_response():
 
 
 #rever response model que foi removido já que passamos a entregar token
-@app.post("/register/")
+@app.post("/register/",response_model=schemas.AuthResponse)
 def create_user(user:schemas.UserCreate,db:db_dependency):
     user = crud.create_user(db=db,user=user)
     if user:
@@ -43,7 +43,7 @@ def create_user(user:schemas.UserCreate,db:db_dependency):
         }
         
 
-@app.patch("/update_profile/")
+@app.patch("/update_profile/",response_model=schemas.UserResponse)
 def update_user(
     db:db_dependency,
     bio:str=Form(None),
@@ -52,7 +52,7 @@ def update_user(
 ):
     user = crud.update_user(db=db,user_id=current_user.id,bio=bio,profile_image=profile_image)
     return user
-@app.post("/login/")
+@app.post("/login/",response_model=schemas.Token)
 def login_user(form_data:Annotated[OAuth2PasswordRequestForm,Depends()],db:db_dependency):
     #we use form_data.username because its the default for the form_data object
     #even if its the email and not the username (its just the name of the field)

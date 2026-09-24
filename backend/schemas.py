@@ -47,6 +47,11 @@ class UserResponse(UserBase):
 
     class Config:
         from_attributes = True
+    
+class AuthResponse(BaseModel):
+    access_token: str
+    token_type: str
+    user: UserResponse
 
 class GameBase(BaseModel):
     name:str
